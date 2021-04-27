@@ -111,7 +111,42 @@ int main() {
 // You may add global variables, functions, and/or
 // class defintions here if you wish.
 
-void sortDataList(list<Data *> &l) {
-    // Fill this in
+template <typename T>
+void sortDataList(list<Data*> &l){
+
+    int sortCase;
+
+    int listSize = l.size();
+
+    /*
+     * first, compare last names
+     * if same, compare first names
+     * if same, compare SSNs
+     */
+
+    /*
+     * T1 will be completely random
+     * T2 will be completely random
+     * T3 will already be sorted by names (not by SSNs)
+     * T4 will be have the same names everywhere, but different SSNs
+     */
+
+    //T1
+    if(sortCase == 1){
+
+    }
+    //T2
+    else if(sortCase == 2){
+
+    }
+    //T3: only compare SSNs
+    else if(sortCase == 3){
+
+    }
+    //T4: only compare SSNs
+    else if(sortCase == 4){
+
+    }
+
 
 }
