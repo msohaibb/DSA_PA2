@@ -111,11 +111,56 @@ int main() {
 // You may add global variables, functions, and/or
 // class defintions here if you wish.
 
-template <typename T>
-void sortDataList(list<Data*> &l){
+int determineCase(list<Data*> &l){
+    int sortCase = 1;
+    int count = 0;
+    string firstFirstName = l.front()->firstName;
 
-    int sortCase;
 
+    for(auto pData:l){
+        if(count == 1000){
+            sortCase = 4;
+            break;
+        }
+        if(pData->firstName != firstFirstName){
+            break;
+        }
+        count++;
+    }
+
+
+    return sortCase;
+
+}
+
+inline bool compareData(Data* data1, Data* data2){
+    if(data1->lastName > data2->lastName){
+        return false;
+    }
+    if(data1->lastName < data2->lastName){
+        return true;
+    }
+    if(data1->firstName > data2->firstName){
+        return false;
+    }
+    if(data1->firstName < data2->firstName){
+        return true;
+    }
+    if(data1->ssn > data2->ssn){
+        return false;
+    }
+    return true;
+}
+
+inline bool compareData4(Data* data1, Data* data2) {
+    if (data1->ssn > data2->ssn) {
+        return false;
+    }
+    return true;
+}
+
+void sortDataList(list<Data*> &l) {
+    int sortCase = determineCase(l);
     int listSize = l.size();
 
     /*
@@ -131,21 +176,21 @@ void sortDataList(list<Data*> &l){
      * T4 will be have the same names everywhere, but different SSNs
      */
 
+
+
     //T1
+    string lastName;
+    string firstName;
+    string SSN;
+
+
     if(sortCase == 1){
-
+        cout << "This is sample 1 or 2" << endl;
+        l.sort(compareData);
     }
-    //T2
-    else if(sortCase == 2){
-
-    }
-    //T3: only compare SSNs
-    else if(sortCase == 3){
-
-    }
-    //T4: only compare SSNs
-    else if(sortCase == 4){
-
+    else{
+        cout << "This is sample 4" << endl;
+        l.sort(compareData4);
     }
 
 
