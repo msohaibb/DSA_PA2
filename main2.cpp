@@ -134,6 +134,7 @@ int determineCase(list<Data*> &l){
     for(auto pData:l){
         if(count2 == 2){
             sortCase = 3;
+            return sortCase;
             break;
         }
         if(pData->firstName != firstFirstName && pData->lastName != firstLastName){
@@ -164,15 +165,6 @@ string convertDigits(int ssn){
     return stringSSN;
 }
 
-int getMax(const int theArray[], int size){
-    int max = theArray[0];
-    for (int i = 1; i < size; i++){
-        if (theArray[i] > max){
-            max = theArray[i];
-        }
-    }
-    return max;
-}
 
 int theArray[1010001];
 
@@ -199,9 +191,201 @@ void binSort(int unsortedArray[], int size, int place)
 }
 
 void radixSort(int unsortedArray[], int size){
-    int max = getMax(unsortedArray, size);
-    for (int place = 1; max/place > 0; place *= 10){
+    for (int place = 1; 999999999/place > 0; place *= 10){
         binSort(unsortedArray, size, place);
+    }
+}
+
+
+
+inline bool compareData(Data* data1, Data* data2){
+
+    if(data1->lastName > data2->lastName){
+        return false;
+    }
+    if(data1->lastName < data2->lastName){
+        return true;
+    }
+    if(data1->firstName > data2->firstName){
+        return false;
+    }
+    if(data1->firstName < data2->firstName){
+        return true;
+    }
+    if(data1->ssn > data2->ssn){
+        return false;
+    }
+    return true;
+}
+
+/*inline bool compareData4(Data* data1, Data* data2) {
+    if (data1->ssn > data2->ssn) {
+        return false;
+    }
+    return true;
+}*/
+
+int indirectArray[1010001];
+list<list<Data*>> miniLists(100000);
+list<Data*> tempList(20);
+int SSNsRadix[100000];
+
+void siftT3(list<Data*> &l){
+    string currentFirstName = l.front()->firstName;
+    string currentLastName = l.front()->lastName;
+    int tempSize = 0;
+    int i = 0;
+    Data* tempData = nullptr;
+
+    for(auto it = l.begin(); it != l.end(); ++it)
+    {
+        if((*it)->firstName == currentFirstName && ((*it)->lastName) == currentLastName){
+            tempList.push_front(*it);
+            tempSize++;
+        }
+        //cout << "done finding same names" << endl;
+        else{
+            i = 0;
+            tempData = *it;
+            cout << "tempData : ";
+            cout << tempData->lastName << " " << tempData->firstName << " " << tempData->ssn << endl;
+            for(auto test:tempList){
+                if(tempSize == i){
+                    break;
+                }
+                cout << "tempList: ";
+                cout << test->lastName << " " << test->firstName << " " << test->ssn << endl;
+                i++;
+            }
+            cout << endl;
+            miniLists.push_front(tempList);
+            cout << "list pushed!" << endl;
+            i = 0;
+            for(auto currentData:tempList){
+                if(i == tempSize){
+                    break;
+                }
+
+                SSNsRadix[i] = convertSSN(currentData);
+                i++;
+                cout << "populating array" << endl;
+
+            }
+            cout << "sorting" << endl;
+            radixSort(SSNsRadix, i);
+            cout << "sort done" << endl;
+
+            //ofstream output("test.txt");
+
+            i = 0;
+            for(auto currentData1:tempList){
+                if(i == tempSize){
+                    break;
+                }
+                currentData1->ssn = convertDigits(SSNsRadix[i]);
+                cout << "populating templist" << endl;
+                cout << currentData1 -> lastName << " " << currentData1 -> firstName << " " << currentData1->ssn << endl;
+                i++;
+            }
+            cout << endl;
+            tempList.clear();
+            tempList.push_front(tempData);
+            tempSize = 1;
+            currentFirstName = (*it)->firstName;
+            currentLastName = (*it)->lastName;
+        }
+        auto it1 = l.begin();
+        auto it2 = miniLists.end();
+        l.clear();
+        for(; it1 != l.end() && it2 != miniLists.end(); ++it1, ++it2)
+        {
+
+            auto it3 = (*it2).begin();
+            for(; it3 != (*it2).end(); ++it3) {
+                 l.push_front(*it3);
+            }
+        }
+
+
+
+        //miniLists.push_back()
+    }
+};
+
+
+void sortDataList(list<Data*> &l) {
+    int sortCase = determineCase(l);
+    int listSize = l.size();
+
+
+    /*
+     * first, compare last names
+     * if same, compare first names
+     * if same, compare SSNs
+     */
+
+    /*
+     * T1 will be completely random
+     * T2 will be completely random (bigger than T2)
+     * T3 will already be sorted by names (not by SSNs)
+     * T4 will be have the same names everywhere, but different SSNs
+     */
+
+    //setPartialData(l);
+
+    ofstream output("test.txt");
+
+    //radixSort(indirectArray, listSize);
+
+
+    if(sortCase == 1){
+        cout << "This is sample 1" << endl;
+        l.sort(compareData);
+    }
+
+    else if(sortCase == 2){
+        cout << "This is sample 2" << endl;
+        l.sort(compareData);
+        /*theList.sort(comparePartialData);
+        output << listSize << endl;
+        for(const auto& currentData:theList){
+            output
+                << currentData.dataAddress->lastName  << " "
+                << currentData.dataAddress->firstName<< " "
+                << currentData.dataAddress->ssn << endl;
+        }*/
+
+
+    }
+
+    else if(sortCase == 3){
+        cout << "This is sample 3" << endl;
+        siftT3(l);
+        //l.sort(compareData);
+    }
+
+    else{
+        cout << "This is sample 4" << endl;
+
+        int i = 0;
+        for(auto currentData:l){
+            if(i == listSize){
+                break;
+            }
+            indirectArray[i] = convertSSN(currentData);
+            i++;
+        }
+        radixSort(indirectArray, listSize);
+
+        i = 0;
+        for(auto currentData:l){
+            if(i == listSize){
+                break;
+            }
+            currentData->ssn = convertDigits(indirectArray[i]);
+            i++;
+        }
+        //radixSort(l);
     }
 }
 
@@ -247,7 +431,7 @@ void radixSort(list<Data*> &l){
 }*/
 
 
-class partialData{
+/*class partialData{
 public:
     string partialLastName;
     string partialFirstName;
@@ -263,9 +447,9 @@ public:
 };
 
 list<partialData> theList;
-int indirectArray[1010001];
 
-/*void setPartialData(list<Data*> &l){
+
+void setPartialData(list<Data*> &l){
     int i = 0;
     partialData temp;
     for(auto currentData:l){
@@ -273,7 +457,7 @@ int indirectArray[1010001];
             break;
         }
 
-        theList.emplace_back(currentData->firstName.substr(0, 4), currentData->lastName.substr(0, 4), currentData);
+        theList.emplace_back(partialData(currentData->firstName.substr(0, 4), currentData->lastName.substr(0, 4), currentData));
         i++;
     }
 }
@@ -314,99 +498,3 @@ bool comparePartialData(const partialData& data1, const partialData& data2){
     }
     return true;
 }*/
-
-
-inline bool compareData(Data* data1, Data* data2){
-
-    if(data1->lastName > data2->lastName){
-        return false;
-    }
-    if(data1->lastName < data2->lastName){
-        return true;
-    }
-    if(data1->firstName > data2->firstName){
-        return false;
-    }
-    if(data1->firstName < data2->firstName){
-        return true;
-    }
-    if(data1->ssn > data2->ssn){
-        return false;
-    }
-    return true;
-}
-
-/*inline bool compareData4(Data* data1, Data* data2) {
-    if (data1->ssn > data2->ssn) {
-        return false;
-    }
-    return true;
-}*/
-
-
-
-void sortDataList(list<Data*> &l) {
-    int sortCase = determineCase(l);
-    int listSize = l.size();
-
-
-    /*
-     * first, compare last names
-     * if same, compare first names
-     * if same, compare SSNs
-     */
-
-    /*
-     * T1 will be completely random
-     * T2 will be completely random (bigger than T2)
-     * T3 will already be sorted by names (not by SSNs)
-     * T4 will be have the same names everywhere, but different SSNs
-     */
-
-    //setPartialData(l);
-
-
-
-    radixSort(indirectArray, listSize);
-
-    ofstream output("test.txt");
-
-    if(sortCase == 1){
-        cout << "This is sample 1" << endl;
-        l.sort(compareData);
-    }
-
-    else if(sortCase == 2){
-        cout << "This is sample 2" << endl;
-        l.sort(compareData);
-    }
-
-    else if(sortCase == 3){
-        cout << "This is sample 3" << endl;
-        l.sort(compareData);
-    }
-
-    else{
-        cout << "This is sample 4" << endl;
-
-        int i = 0;
-        for(auto currentData:l){
-            if(i == listSize){
-                break;
-            }
-            indirectArray[i] = convertSSN(currentData);
-            i++;
-        }
-        radixSort(indirectArray, listSize);
-
-        i = 0;
-        for(auto currentData:l){
-            if(i == listSize){
-                break;
-            }
-            currentData->ssn = convertDigits(indirectArray[i]);
-            i++;
-        }
-        //radixSort(l);
-    }
-}
