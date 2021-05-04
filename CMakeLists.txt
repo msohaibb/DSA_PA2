@@ -3,4 +3,4 @@ project(DSA_PA2)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(DSA_PA2 main2.cpp main2.cpp)
+add_executable(DSA_PA2 finalMain.cpp finalMain.cpp)

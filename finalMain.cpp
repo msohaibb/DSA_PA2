@@ -109,7 +109,19 @@ int main() {
 // -------------------------------------------------
 
 // You may add global variables, functions, and/or
-// class definitions here if you wish.
+// class defintions here if you wish.
+
+
+/*
+ * Sohaib Bhatti
+ * The code below determines which sort case is given and applies an appropriate method to sort it by last name, first name, and ssn
+ * convertSSN and convertDigits are there to aid in sorting SSNs
+ * determineCase determines which sample is the given text file
+ * radixSort uses binSort to sort an array of SSNs
+ * compareData is the comp function for l.sort() for cases 1 and 2
+ * compareData4 is the comp function for l.sort() for cases 3 and 4
+ */
+
 
 
 int determineCase(list<Data*> &l){
@@ -150,11 +162,11 @@ int determineCase(list<Data*> &l){
 
 }
 
-int convertSSN(Data* data){
+int convertSSNtoInt(Data* data){
     return std::stoi(data->ssn.substr(0,3) + data->ssn.substr(4,2) + data->ssn.substr(7,4));
 }
 
-string convertDigits(int ssn){
+string convertIntToSSN(int ssn){
     string stringSSN = std::to_string(ssn);
     while(stringSSN.length() != 9){
         stringSSN.insert(0, "0");
@@ -194,8 +206,6 @@ void radixSort(int unsortedArray[], int size){
         binSort(unsortedArray, size, place);
     }
 }
-
-
 
 inline bool compareData(Data* data1, Data* data2){
 
@@ -281,7 +291,7 @@ void sortDataList(list<Data*> &l) {
             if(i == listSize){
                 break;
             }
-            indirectArray[i] = convertSSN(currentData);
+            indirectArray[i] = convertSSNtoInt(currentData);
             i++;
         }
         radixSort(indirectArray, listSize);
@@ -291,7 +301,7 @@ void sortDataList(list<Data*> &l) {
             if(i == listSize){
                 break;
             }
-            currentData->ssn = convertDigits(indirectArray[i]);
+            currentData->ssn = convertIntToSSN(indirectArray[i]);
             i++;
         }
     }
