@@ -109,7 +109,7 @@ int main() {
 // -------------------------------------------------
 
 // You may add global variables, functions, and/or
-// class defintions here if you wish.
+// class definitions here if you wish.
 
 
 int determineCase(list<Data*> &l){
@@ -164,7 +164,7 @@ string convertDigits(int ssn){
     return stringSSN;
 }
 
-int getMax(int theArray[], int size){
+int getMax(const int theArray[], int size){
     int max = theArray[0];
     for (int i = 1; i < size; i++){
         if (theArray[i] > max){
@@ -226,7 +226,7 @@ void countingSort(list<Data*> &l, int div)
     }
     for (int i = 1; i < 10; i++)
         buckets[i] += buckets[i - 1];
-    for (auto it = l.rbegin(); it != l.rend(); ++it){
+    for (auto it = l.rBegin(); it != l.rend(); ++it){
         theArray[buckets[(convertSSN(*it)/div)%10] - 1] = convertSSN(*it);
         buckets[ (convertSSN(*it)/div)%10 ]--;
     }
@@ -251,11 +251,69 @@ class partialData{
 public:
     string partialLastName;
     string partialFirstName;
-    string partialSSN;
+    Data* dataAddress{};
 
-    Data* dataAddress;
+    partialData(){}
+
+    partialData(string PLN, string PFN, Data* DA){
+        partialLastName = PLN;
+        partialFirstName = PFN;
+        dataAddress = DA;
+    }
 };
 
+list<partialData> theList;
+int indirectArray[1010001];
+
+/*void setPartialData(list<Data*> &l){
+    int i = 0;
+    partialData temp;
+    for(auto currentData:l){
+        if(i == l.size()){
+            break;
+        }
+
+        theList.emplace_back(currentData->firstName.substr(0, 4), currentData->lastName.substr(0, 4), currentData);
+        i++;
+    }
+}
+
+
+bool comparePartialData(const partialData& data1, const partialData& data2){
+    if(data1.partialLastName == data2.partialLastName){
+        if(data1.dataAddress->lastName > data2.dataAddress->lastName){
+            return false;
+        }
+        if(data1.dataAddress->lastName < data2.dataAddress->lastName){
+            return true;
+        }
+    }
+    if(data1.partialLastName > data2.partialLastName){
+        return false;
+    }
+    if(data1.partialLastName < data2.partialLastName){
+        return true;
+    }
+
+    if(data1.partialFirstName == data2.partialFirstName){
+        if(data1.dataAddress->firstName > data2.dataAddress->firstName){
+            return false;
+        }
+        if(data1.dataAddress->firstName < data2.dataAddress->firstName){
+            return true;
+        }
+    }
+    if(data1.partialFirstName > data2.partialFirstName){
+        return false;
+    }
+    if(data1.partialFirstName < data2.partialFirstName){
+        return true;
+    }
+    if(data1.dataAddress->ssn > data2.dataAddress->ssn ){
+        return false;
+    }
+    return true;
+}*/
 
 
 inline bool compareData(Data* data1, Data* data2){
@@ -285,12 +343,12 @@ inline bool compareData(Data* data1, Data* data2){
     return true;
 }*/
 
-int smallArray[1010001];
-int indirectArray[1010001];
+
 
 void sortDataList(list<Data*> &l) {
     int sortCase = determineCase(l);
     int listSize = l.size();
+
 
     /*
      * first, compare last names
@@ -305,10 +363,8 @@ void sortDataList(list<Data*> &l) {
      * T4 will be have the same names everywhere, but different SSNs
      */
 
-    //T1
-    string lastName;
-    string firstName;
-    string SSN;
+    //setPartialData(l);
+
 
 
     radixSort(indirectArray, listSize);
